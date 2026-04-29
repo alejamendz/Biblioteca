@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca - Catálogo</title>
+    <style>
+
+        
+        body {
+            margin: 0; 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f4f7f6; 
+            padding-top: 80px; 
+        }
+        .btn-reglas-card 
+        {
+            background: none;
+            border: none;
+            color: #666;
+            text-decoration: underline;
+            font-size: 12px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-reglas-card:hover 
+        {
+             color: #f05a28; 
+        }       
+
+      
+        .navbar {
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 60px;
+            background: #333333; 
+            color: white;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 25px; 
+            box-sizing: border-box; 
+            z-index: 1000;
+            border-bottom: 1px solid #444;
+        }
+
+        .nav-left { display: flex; align-items: center; }
+        .btn-update { 
+            background: #bdb7b5; 
+            color: white; 
+            border: none; 
+            padding: 7px 16px; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .nav-center 
+        {
+            position: absolute; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 38%;
+        }
+
+        .search-container
+        {
+            background: white; 
+            display: flex; 
+            align-items: center;
+            padding: 0 12px; 
+            border-radius: 4px; 
+            height: 34px;
+        }
+        
+        .search-container input {
+            border: none; 
+            outline: none; 
+            width: 100%; 
+            padding-left: 10px; 
+            font-size: 14px; 
+            color: #333; 
+            background: transparent;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 22px; }
+        .nav-link { color: #ccc; font-size: 14px; cursor: pointer; font-weight: 500; }
+
+        .notif-icon { position: relative; font-size: 19px; cursor: pointer; color: #ccc; }
+        .notif-icon .dot {
+            position: absolute; 
+            top: -1px; 
+            right: -2px;
+            width: 7px; 
+            height: 7px; 
+            background: #f05a28;
+            border-radius: 50%; 
+            border: 1px solid #333;
+        }
+
+        .profile-section {
+            display: flex; 
+            align-items: center; 
+            cursor: pointer; 
+            color: white;
+            border-left: 1px solid #555; 
+            padding-left: 20px;
+        }
+
+        .avatar-circle {
+            width: 32px; 
+            height: 32px; 
+            background: #666;
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center;
+            justify-content: center; 
+            margin-right: 10px; 
+            font-size: 13px; 
+            font-weight: bold;
+        }
+
+    
+        .main-container { padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        h1 { color: #333; margin-bottom: 30px; font-weight: 300; }
+
+        .grid-libros {
+            display: grid; 
+            
+            grid-template-columns: repeat(auto-fill, minmax(260px, 260px));
+            gap: 30px; 
+            width: 100%; 
+            max-width: 1200px;
+            justify-content: center;
+        }
+
+        .card-libro {
+            background: white; 
+            border-radius: 12px; 
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            cursor: pointer;
+            position: relative;
+            height: 450px; transition: 0.3s;
+        }
+
+        
+        .card-libro.hidden { display: none; }
+
+        .portada {
+            width: 100%; 
+            height: 100%; 
+            background: #2c3e50;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            color: white; 
+            font-size: 18px; 
+            font-weight: bold;
+            position: absolute; 
+            top: 0; 
+            z-index: 2; 
+            transition: 0.5s;
+        }
+        .card-libro.active .portada { transform: translateY(-100%); }
+
+        .info-detalle {
+            padding: 20px; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            box-sizing: border-box;
+        }
+        .desc-libro { font-size: 13px; color: #666; margin: 10px 0; line-height: 1.5; height: 80px; overflow-y: auto; }
+        .stock-info { font-weight: bold; color: #f05a28; margin-bottom: 15px; }
+
+        .btn-reservar {
+            background: #00a8ff; 
+            color: white; 
+            border: none;
+            padding: 10px 30px; 
+            border-radius: 25px; 
+            font-weight: bold; 
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-reservar:hover { background: #008fdb; }
+        .btn-reservar:disabled { background: #ccc; cursor: not-allowed; }
+
+        
+        #ticket { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            z-index: 1100; 
+            text-align: center; 
+            width: 300px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1050; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+       <div class="nav-left">
+       </div>
+        <div class="nav-center">
+            <div class="search-container">
+                <span style="color: #999;">🔍</span>
+                <input type="text" id="busqueda" placeholder="Search for help" onkeyup="filtrarLibros()">
+            </div>
+            
+        </div>
+        <div class="nav-right">
+            <span class="nav-link">Ayuda</span>
+            <div class="notif-icon">🔔<span class="dot"></span></div>
+            <div class="profile-section">
+            <div class="avatar-circle" id="userAvatar">U</div>
+            <span id="nombreHeader" class="user-name"></span>
+            <span style="font-size: 10px; margin-left: 8px; color: #888;">▼</span>
+        </div>
+</div>
+    </div>
+
+    <div class="main-container">
+        <h1>Catálogo de Libros Físicos</h1>
+        <div class="grid-libros">
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="it.jpg" style="width:100%; height:100%; object-fit:cover;" alt="IT"></div>
+                <div class="info-detalle">
+                    <h3>IT (ESO)</h3>
+                    <p><b>Autor:</b> Stephen King</p>
+                    <p class="desc-libro">¿Quién mutila y mata a los niños de un pequeño pueblo? Tras 27 años, una antigua promesa les hace volver.</p>
+                    <p class="stock-info">Disponibles: <span id="s1">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'IT', 's1', this)">Reservar</button>
+
+                    <button class="btn-reglas-card" onclick="verReglas(event)">Ver reglas de préstamo</button>
+                </div>
+            </div>
+
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="cnqmeqc.jpg" style="width:100%; height:100%; object-fit:cover;" alt="estrellas"></div>
+                <div class="info-detalle">
+                    <h3>Cuando no queden más estrellas que contar</h3>
+                    <p><b>Autor:</b> María Martínez</p>
+                    <p class="desc-libro">Un viaje inesperado, una chica incompleta y una verdad escondida en una caja de música.</p>
+                    <p class="stock-info">Disponibles: <span id="s2">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'Estrellas', 's2', this)">Reservar</button>
+                </div>
+            </div>
+
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="principito.webp" style="width:100%; height:100%; object-fit:cover;" alt="Principito"></div>
+                <div class="info-detalle">
+                    <h3>El Principito</h3>
+                    <p><b>Autor:</b> Antoine de Saint-Exupéry</p>
+                    <p class="desc-libro">Un pequeño príncipe viaja por el universo descubriendo la extraña forma en que los adultos ven la vida.</p>
+                    <p class="stock-info">Disponibles: <span id="s3">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'El Principito', 's3', this)">Reservar</button>
+                </div>
+            </div>
+
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="misery.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Misery"></div>
+                <div class="info-detalle">
+                    <h3>Misery</h3>
+                    <p><b>Autor:</b> Stephen King</p>
+                    <p class="desc-libro">Un escritor sufre un accidente y es rescatado por una fan obsesiva que lo mantiene cautivo.</p>
+                    <p class="stock-info">Disponibles: <span id="s4">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'Misery', 's4', this)">Reservar</button>
+                </div>
+            </div>
+
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="eltunel.webp" style="width:100%; height:100%; object-fit:cover;" alt="El Tunel"></div>
+                <div class="info-detalle">
+                    <h3>El túnel</h3>
+                    <p><b>Autor:</b> Ernesto Sabato</p>
+                    <p class="desc-libro">Un oscuro análisis de la psicología humana y la obsesión a través de la confesión de un crimen.</p>
+                    <p class="stock-info">Disponibles: <span id="s5">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'El túnel', 's5', this)">Reservar</button>
+                </div>
+            </div>
+            
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="boulevard.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Boulevard"></div>
+                <div class="info-detalle">
+                    <h3>Boulevard</h3>
+                    <p><b>Autor:</b> Flor M. Salvador  </p>
+                    <p class="desc-libro">¿QUIÉN DIJO QUE DESPUÉS DE LA TORMENTA SALE EL SOL CUANDO PUEDE HABER UN RAYO?
+                    Luke Howland, lleno de problemas y sumido en una desesperación profunda, y Hasley Weigel, tan despistada como optimista, 
+                    no se ajustan al prototipo de pareja perfecta.
+                    Como si cada uno fuese un cielo uno es tormenta y el otro un día soleado: él es oscuridad. 
+                    Ella un rayo de sol.</p>
+                    <p class="stock-info">Disponibles: <span id="s5">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'Boulevard', 's6', this)">Reservar</button>
+                </div>
+            </div>
+
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="indigno.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Indigno de ser humano"></div>
+                <div class="info-detalle">
+                    <h3>Indigno de ser humano</h3>
+                    <p><b>Autor:</b> Osamu Dazai  </p>
+                    <p class="desc-libro">Indigno de ser humano narra, con un estilo sencillo y sin florituras, pero delicadísimo, 
+                    la degradación personal de Yozo, un joven que se muda a la ciudad a estudiar y 
+                    termina cayendo en el alcoholismo y la adicción a la morfina. Yozo es incapaz de mantener
+                    una relación sana con nadie. La obra duele, escuece, araña, es dura, 
+                    oscura, inquietante, pero a la vez es necesaria, distinta, provoca emociones nuevas en el lector, 
+                    nos hace meditar e incluso plantearnos cuestiones vitales propias</p>
+                    <p class="stock-info">Disponibles: <span id="s5">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'Indigno de ser humano', 's7', this)">Reservar</button>
+                </div>
+            </div>
+
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="cyc.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Crimen y castigo"></div>
+                <div class="info-detalle">
+                    <h3>Crimen y castigo</h3>
+                    <p><b>Autor:</b> Fyodor Dostoevsky  </p>
+                    <p class="desc-libro">Crimen y castigo es una novela de carácter psicológico escrita por el autor ruso Fiódor Dostoyevski.
+                         Fue publicada por primera vez, por entregas, en la revista El mensajero ruso, entre 1866 y 1867,en doce partes, y publicada después como libro. 
+                         Junto con Guerra y paz de León Tolstói, se considera una de las novelas más influyentes e internacionales de la literatura rusa.
+                         Asimismo, los diálogos mantenidos entre el protagonista, Raskólnikov, y el inspector de policía son considerados por algunos autores, 
+                         como el prestigioso literato Stefan Zweig, una de las cimas de la literatura universal.</p>
+                    <p class="stock-info">Disponibles: <span id="s5">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'Crimen y castigo', 's8', this)">Reservar</button>
+                </div>
+            </div>
+
+            <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="madlb.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Más Allá de Los Bridgerton"></div>
+                <div class="info-detalle">
+                    <h3>Más Allá de Los Bridgerton: Entre La Historia Y La Fantasía Romántica</h3>
+                    <p><b>Autor:</b> Gemma Rubio  </p>
+                    <p class="desc-libro">La realidad de una época histórica como la Regencia inglesa y
+                         la ficción Los Bridgerton creada por Netflix, así como los best sellers de Julia Quinn, 
+                         se dan de la mano para conformar un libro que te ayudará a descubrir momentos, acontecimientos y 
+                         personajes que han inspirado una de las series de más éxito de los últimos tiempos.</p>
+                    <p class="stock-info">Disponibles: <span id="s5">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'Más Allá de Los Bridgerton', 's9', this)">Reservar</button>
+                </div>
+
+                <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="divergente.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Divergente"></div>
+                <div class="info-detalle">
+                    <h3>Divergente</h3>
+                    <p><b>Autor:</b> Veronica Roth </p>
+                    <p class="desc-libro">La historia se desarrolla en una sociedad futura dividida en cinco facciones, 
+                        cada una basada en una virtud: Verdad, Abnegación, Osadía, Cordialidad y Erudición. 
+                        Los jóvenes deben elegir a qué facción pertenecerán para el resto de sus vidas, lo que define su identidad y su lugar en la sociedad.
+                        La protagonista, Beatrice Prior (Tris), descubre que no encaja en una sola facción,
+                        lo que la convierte en una “divergente”, algo considerado peligroso porque las personas como 
+                        ella no pueden ser controladas fácilmente por el sistema. Al elegir unirse a Osadía, Tris enfrenta duras pruebas físicas y emocionales mientras oculta su secreto.
+                        A lo largo del libro, se exploran temas como la identidad, la libertad, el control social y el miedo.
+                         Tris también desarrolla una relación con su instructor, Tobias Eaton (Cuatro), quien juega un papel clave en su crecimiento y 
+                         en la lucha contra una conspiración que amenaza con destruir el equilibrio entre las facciones.</p>
+                    <p class="stock-info">Disponibles: <span id="s5">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'Divergente', 's10', this)">Reservar</button>
+                </div>
+
+                <div class="card-libro" onclick="this.classList.toggle('active')">
+                <div class="portada"><img src="crepusculo.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Crepúsculo"></div>
+                <div class="info-detalle">
+                    <h3>Crepúsculo</h3>
+                    <p><b>Autor:</b> Stephenie Meyer</p>
+                    <p class="desc-libro">La historia sigue a Bella Swan, una adolescente que se muda a la lluviosa ciudad de Forks para vivir con su padre. 
+                        Allí conoce a Edward Cullen, un joven misterioso que resulta ser un vampiro.
+                        A pesar del peligro que representa, Bella y Edward se enamoran profundamente. 
+                        Edward lucha constantemente por controlar su instinto de beber sangre humana, mientras intenta proteger a Bella. 
+                        La relación se complica aún más cuando aparecen otros vampiros, especialmente James, que ve a Bella como una presa y 
+                        pone su vida en riesgo. El libro explora temas como el amor prohibido, el sacrificio y
+                        el peligro de lo desconocido, todo dentro de un ambiente oscuro y romántico.</p>
+                    <p class="stock-info">Disponibles: <span id="s2">3</span></p>
+                    <button class="btn-reservar" onclick="hacerReserva(event, 'Crepúsculo', 's11', this)">Reservar</button>
+                </div>
+            </div>
+
+
+
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div id="ticket">
+        <h2 style="color:#00a8ff">🎫 RESERVA EXITOSA</h2>
+        <p id="msgTicket"></p>
+        <p>Recoger el día: <br><b id="fecha" style="color:#f05a28"></b></p>
+        <div id="qr"></div>
+        <br>
+        <button onclick="cerrar()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Aceptar</button>
+    </div>
+
+    <script>
+        window.onload = function() 
+        {
+            const usuario = localStorage.getItem('usuarioActivo') || 'Invitado';
+            const elNombre = document.getElementById('nombreHeader');
+            if (elNombre) 
+            {
+                elNombre.innerText = usuario;
+            }
+            const elAvatar = document.getElementById('userAvatar');
+            if (elAvatar) 
+            {
+                elAvatar.innerText = usuario.charAt(0).toUpperCase();
+            }
+        };
+
+        function filtrarLibros() {
+            const texto = document.getElementById('busqueda').value.toLowerCase();
+            const libros = document.querySelectorAll('.card-libro');
+            libros.forEach(libro => {
+                const titulo = libro.querySelector('h3').innerText.toLowerCase();
+                if (titulo.includes(texto)) 
+                {
+                    libro.classList.remove('hidden');
+                } 
+                else 
+                {
+                    libro.classList.add('hidden');
+                }
+            });
+        }
+
+        function hacerReserva(e, nombre, idStock, boton) {
+            e.stopPropagation();
+            let span = document.getElementById(idStock);
+            let cantidad = parseInt(span.innerText);
+
+            if (cantidad > 0) {
+                cantidad--;
+                span.innerText = cantidad;
+                if (cantidad === 0) { boton.disabled = true; boton.innerText = "Agotado"; }
+
+                const f = new Date(); f.setDate(f.getDate() + 2);
+                document.getElementById('fecha').innerText = f.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'}).toUpperCase();
+                document.getElementById('msgTicket').innerText = "Libro: " + nombre;
+                
+                const urlQR = `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=Reserva-${nombre}`;
+                document.getElementById('qr').innerHTML = `<img src="${urlQR}">`;
+
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('ticket').style.display = 'block';
+            }
+        }
+        function verReglas(e) 
+        {
+            if(e) e.stopPropagation(); 
+    
+             alert("📌 REGLAS Y CONDICIONES DE PRÉSTAMO:\n\n" +
+                "1. FECHAS: Recogida el 30 de abril y devolución el 07 de mayo.\n" +
+                "2. RECOJO: Es obligatorio presentar el código QR generado al momento de la reserva.\n" +
+                "3. RETRASO: Multa de Q10.00 por cada día de mora después del vencimiento.\n" +
+                "4. DAÑOS: Reposición del ejemplar o pago del valor comercial más multa por daños.\n" +
+                "5. EXTRAVÍO: Reposición obligatoria del libro nuevo o el pago total de su valor comercial.");
+        }
+        function cerrar() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('ticket').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
